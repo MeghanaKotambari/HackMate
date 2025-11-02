@@ -23,7 +23,7 @@ module.exports.register = async (req, res) => {
     });
 
     if (!newUser) {
-      return res.status(401).json({ message: "Errro Cratign the New User" });
+      return res.status(401).json({ message: "Errro Creating the New User" });
     }
 
     const token = await jwt.sign(
@@ -35,8 +35,7 @@ module.exports.register = async (req, res) => {
       .status(201)
       .json({ message: "Register Successfully", success: true, user: newUser });
   } catch (error) {
-    console.log("Error in Register in server : ", error.messsage);
-    res.status(500).json({ message: "Internal Server Error : ", error });
+    console.log("Error in Register in server : ", error.message);
   }
 };
 
@@ -48,7 +47,7 @@ module.exports.login = async (req, res) => {
       return res.status(404).json({ message: "All fields are required" });
     }
 
-    const user = await authModel.findOne(email);
+    const user = await authModel.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "USer Not Found" });
     }

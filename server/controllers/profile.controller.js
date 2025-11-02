@@ -62,7 +62,7 @@ module.exports.getProfile = async (req, res) => {
       return res.status(404).json({ message: "User Id Not Found" });
     }
 
-    const profile = await profileModel.findOne(userId).populate("userId");
+    const profile = await profileModel.findOne({ userId }).populate("userId");
 
     if (!profile) {
       return res.status(404).json({ message: "Error Fetching Profile" });
@@ -74,8 +74,7 @@ module.exports.getProfile = async (req, res) => {
       profile: profile,
     });
   } catch (error) {
-    consconsole.log("Error Getting profile : ", error.message);
-    res.status(500).json({ message: "Internal Server Error" }, error);
-    le;
+    console.log("Error Getting profile : ", error.message);
+    res.status(500).json({ message: "Internal Server Error", error });
   }
 };
