@@ -5,7 +5,7 @@ const LandingPage = () => {
   const title = "HACKMATE";
 
   return (
-    <div className="relative w-full min-h-screen overflow-x-hidden bg-black">
+    <div className="relative w-screen min-h-screen overflow-x-hidden bg-black">
       {/* Animated Split Background */}
       <div className="absolute inset-0 flex">
         <motion.div
@@ -27,25 +27,9 @@ const LandingPage = () => {
         {/* Big Retro Title */}
         <motion.h1
           style={{ fontFamily: "'Bungee', sans-serif" }}
-          className="text-[10vw] md:text-[9rem] font-extrabold text-yellow-400 drop-shadow-[8px_8px_0px_#000] flex flex-wrap justify-center leading-none tracking-tight"
+          className="text-[120px] md:text-[150px] lg:text-[200px] font-extrabold text-yellow-400 drop-shadow-[8px_8px_0px_#000] flex flex-wrap justify-center leading-none tracking-tight"
         >
-          {title.split("").map((char, index) => (
-            <motion.span
-              key={index}
-              initial={{ y: 0 }}
-              animate={{ y: [0, -20, 0] }}
-              transition={{
-                duration: 1.2,
-                delay: index * 0.1,
-                repeat: Infinity,
-                repeatDelay: 1.2,
-                ease: "easeInOut",
-              }}
-              className="inline-block"
-            >
-              {char}
-            </motion.span>
-          ))}
+          HACKMATE
         </motion.h1>
 
         {/* Tagline */}
@@ -78,8 +62,8 @@ const LandingPage = () => {
                 Team Matching
               </h3>
               <p className="text-gray-300 text-lg">
-                Match with teammates based on skills, timezone, and project ideas
-                using our smart tag system.
+                Match with teammates based on skills, timezone, and project
+                ideas using our smart tag system.
               </p>
             </motion.div>
 
@@ -91,8 +75,8 @@ const LandingPage = () => {
                 Built-in Planner
               </h3>
               <p className="text-gray-300 text-lg">
-                Plan and track your hackathon projects with our integrated Trello-like
-                project board.
+                Plan and track your hackathon projects with our integrated
+                Trello-like project board.
               </p>
             </motion.div>
 
@@ -104,8 +88,8 @@ const LandingPage = () => {
                 Leaderboards
               </h3>
               <p className="text-gray-300 text-lg">
-                See top teams, track progress, and celebrate achievements in live
-                hackathon leaderboards.
+                See top teams, track progress, and celebrate achievements in
+                live hackathon leaderboards.
               </p>
             </motion.div>
           </div>
