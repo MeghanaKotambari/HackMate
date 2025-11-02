@@ -7,19 +7,14 @@ import { useNavigate } from "react-router-dom";
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [isRegistering, setIsRegistering] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleRegister = (e) => {
     e.preventDefault();
     setIsRegistering(true);
-
-    // Simulate register process
     setTimeout(() => {
       setIsRegistering(false);
-      setIsSuccess(true);
-
-      // Redirect after animation
-      setTimeout(() => navigate("/login"), 1500);
+      alert("✅ Registration Successful!");
+      navigate("/login");
     }, 1500);
   };
 
@@ -44,108 +39,94 @@ const RegisterPage = () => {
       {/* Centered Register Card */}
       <div className="relative z-10 flex items-center justify-center h-full w-full px-4">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="w-full max-w-md text-center p-10 
-                     bg-white/10 backdrop-blur-xl 
-                     border border-white/50 rounded-3xl 
-                     shadow-[0_0_40px_rgba(255,255,255,0.2)]"
+          className="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8"
         >
           {/* Title */}
           <h1
             style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-6xl font-extrabold text-yellow-400 drop-shadow-[3px_3px_0px_#000] mb-6"
+            className="text-4xl font-extrabold text-center text-yellow-500 mb-3"
           >
             HACKMATE
           </h1>
 
-          <p className="text-white/90 mb-10 italic text-lg">
-            Join the network where ideas meet their teammates 🚀
+          <p className="text-gray-700 mb-6 italic text-center text-base">
+            Where ideas meet their teammates 🚀
           </p>
 
           {/* Register Form */}
-          {!isSuccess ? (
-            <form className="space-y-5" onSubmit={handleRegister}>
+          <form onSubmit={handleRegister} className="space-y-5">
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">
+                First Name
+              </label>
               <Input
                 type="text"
-                placeholder="First Name"
-                className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
+                placeholder="Enter your first name"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">
+                Last Name
+              </label>
               <Input
                 type="text"
-                placeholder="Last Name"
-                className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
+                placeholder="Enter your last name"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">
+                Email
+              </label>
               <Input
                 type="email"
-                placeholder="Email"
-                className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
+                placeholder="Enter your email"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">
+                Password
+              </label>
               <Input
                 type="password"
-                placeholder="Password"
-                className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
+                placeholder="Enter your password"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
               />
+            </div>
 
-              <Button
-                type="submit"
-                disabled={isRegistering}
-                className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
-              >
-                {isRegistering ? "Registering..." : "Register"}
-              </Button>
-            </form>
-          ) : (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8, type: "spring" }}
-              className="text-3xl font-bold text-yellow-400"
+            <Button
+              type="submit"
+              disabled={isRegistering}
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2.5 rounded-xl"
             >
-              ✅ Registration Successful!
-              <p className="text-white/70 text-base mt-2">
-                Redirecting to Login...
-              </p>
-            </motion.div>
-          )}
+              {isRegistering ? "Registering..." : "Register"}
+            </Button>
+          </form>
 
           {/* Footer */}
-          {!isSuccess && (
-            <div className="mt-6 text-white/90 text-sm">
-              Already have an account?{" "}
-              <a href="/login" className="text-yellow-400 hover:underline">
-                Login
-              </a>
-            </div>
-          )}
+          <div className="mt-5 text-center text-gray-700 text-sm">
+            Already have an account?{" "}
+            <a
+              href="/login"
+              className="text-yellow-500 font-semibold hover:underline"
+            >
+              Login
+            </a>
+          </div>
         </motion.div>
       </div>
-
-      {/* Soft Glow Effect */}
-      <motion.div
-        initial={{ opacity: 0.2, scale: 1 }}
-        animate={{ opacity: 0.4, scale: 1.3 }}
-        transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
-        className="absolute top-1/2 left-1/2 w-[700px] h-[700px] 
-                   bg-gradient-to-r from-pink-400 via-yellow-400 to-sky-400 
-                   rounded-full blur-[250px] -translate-x-1/2 -translate-y-1/2 
-                   z-0 opacity-40"
-      />
     </div>
   );
 };

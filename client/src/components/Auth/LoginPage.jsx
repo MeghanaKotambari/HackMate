@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setIsLoggingIn(true);
+    setTimeout(() => {
+      setIsLoggingIn(false);
+      alert("✅ Login successful!");
+      navigate("/profile");
+    }, 1500);
+  };
+
   return (
     <div className="relative w-screen h-screen overflow-hidden">
       {/* Animated Split Background */}
@@ -25,77 +39,70 @@ const LoginPage = () => {
       {/* Centered Login Card */}
       <div className="relative z-10 flex items-center justify-center h-full w-full px-4">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="w-full max-w-md text-center p-10 
-                     bg-white/10 backdrop-blur-xl 
-                     border border-white/50 rounded-3xl 
-                     shadow-[0_0_40px_rgba(255,255,255,0.2)]"
+          className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10"
         >
           {/* Title */}
           <h1
             style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-6xl font-extrabold text-yellow-400 drop-shadow-[3px_3px_0px_#000] mb-6"
+            className="text-5xl font-extrabold text-center text-yellow-500 mb-3"
           >
             HACKMATE
           </h1>
 
-          <p className="text-white/90 mb-10 italic text-lg">
+          <p className="text-gray-700 mb-8 italic text-center text-lg">
             Where ideas meet their teammates 🚀
           </p>
 
-          {/* Transparent Form */}
-          <form className="space-y-5">
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
+              <label className="block text-gray-700 font-semibold mb-2">
+                Email
+              </label>
               <Input
                 type="email"
-                placeholder="Email"
-                className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
+                placeholder="Enter your email"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
+                required
               />
             </div>
+
             <div>
+              <label className="block text-gray-700 font-semibold mb-2">
+                Password
+              </label>
               <Input
                 type="password"
-                placeholder="Password"
-                className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
+                placeholder="Enter your password"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
+                required
               />
             </div>
 
             <Button
               type="submit"
-              className="bg-transparent text-white border border-white/70 
-                           placeholder-white/70 focus:border-yellow-400 
-                           focus:ring-yellow-400"
+              disabled={isLoggingIn}
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 rounded-xl"
             >
-              Login
+              {isLoggingIn ? "Logging in..." : "Login"}
             </Button>
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-white/90 text-sm">
+          <div className="mt-6 text-center text-gray-700 text-sm">
             Don’t have an account?{" "}
-            <a href="/register" className="text-yellow-400 hover:underline">
+            <a
+              href="/register"
+              className="text-yellow-500 font-semibold hover:underline"
+            >
               Sign up
             </a>
           </div>
         </motion.div>
       </div>
-
-      {/* Soft Glow Effect */}
-      <motion.div
-        initial={{ opacity: 0.2, scale: 1 }}
-        animate={{ opacity: 0.4, scale: 1.3 }}
-        transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
-        className="absolute top-1/2 left-1/2 w-[700px] h-[700px] 
-                   bg-gradient-to-r from-pink-400 via-yellow-400 to-sky-400 
-                   rounded-full blur-[250px] -translate-x-1/2 -translate-y-1/2 
-                   z-0 opacity-40"
-      />
     </div>
   );
 };

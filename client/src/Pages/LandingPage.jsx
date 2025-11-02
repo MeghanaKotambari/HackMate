@@ -1,11 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   const title = "HACKMATE";
 
   return (
-    <div className="relative w-screen min-h-screen overflow-x-hidden bg-black">
+    <div className="relative w-screen min-h-screen overflow-x-hidden bg-black text-white">
       {/* Animated Split Background */}
       <div className="absolute inset-0 flex">
         <motion.div
@@ -22,76 +24,108 @@ const LandingPage = () => {
         />
       </div>
 
-      {/* Hero Section */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-screen text-center px-4">
-        {/* Big Retro Title */}
-        <motion.h1
-          style={{ fontFamily: "'Bungee', sans-serif" }}
-          className="text-[120px] md:text-[150px] lg:text-[200px] font-extrabold text-yellow-400 drop-shadow-[8px_8px_0px_#000] flex flex-wrap justify-center leading-none tracking-tight"
-        >
-          HACKMATE
-        </motion.h1>
+      {/* HERO SECTION */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-[85vh] text-center px-4">
+        {/* Dancing Title */}
+        <div className="flex flex-wrap justify-center">
+          {title.split("").map((char, i) => (
+            <motion.span
+              key={i}
+              style={{ fontFamily: "'Bungee', sans-serif" }}
+              className="text-[110px] md:text-[140px] lg:text-[180px] font-extrabold text-yellow-400 drop-shadow-[8px_8px_0px_#000]"
+              animate={{
+                y: [0, -20, 0],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop",
+                ease: "easeInOut",
+                delay: i * 0.1, // creates wave effect
+              }}
+            >
+              {char}
+            </motion.span>
+          ))}
+        </div>
 
         {/* Tagline */}
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="mt-6 text-2xl md:text-3xl text-white italic tracking-wide font-medium drop-shadow-[3px_3px_0px_#000]"
+          transition={{ delay: 0.8, duration: 1 }}
+          className="mt-4 text-xl md:text-2xl text-white italic tracking-wide font-medium drop-shadow-[3px_3px_0px_#000]"
         >
-          Where ideas meet their teammates
+          Where ideas meet their teammates 🚀
         </motion.p>
+
+        {/* Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.3, duration: 1 }}
+          className="mt-10 flex gap-6"
+        >
+          <button
+            onClick={() => navigate("/login")}
+            className="px-10 py-4 text-lg font-bold text-black bg-yellow-400 rounded-full shadow-[0_0_20px_rgba(255,255,0,0.5)] hover:bg-yellow-500 hover:shadow-[0_0_30px_rgba(255,255,0,0.7)] transition-all duration-300"
+          >
+            Login
+          </button>
+          <button
+            onClick={() => navigate("/register")}
+            className="px-10 py-4 text-lg font-bold text-yellow-400 border-2 border-yellow-400 rounded-full hover:bg-yellow-400 hover:text-black transition-all duration-300"
+          >
+            Register
+          </button>
+        </motion.div>
       </div>
 
-      {/* Features Section */}
-      <section className="relative z-20 bg-gradient-to-r from-gray-900 to-sky-800 py-24 px-8 text-white">
+      {/* Gradient Divider Transition */}
+      <div className="w-full h-32 bg-gradient-to-b from-transparent via-black/60 to-gray-900 relative z-10 -mt-10" />
+
+      {/* FEATURES SECTION */}
+      <section className="relative z-20 bg-gradient-to-r from-gray-900 to-sky-900 py-16 px-8">
         <div className="max-w-6xl mx-auto text-center">
-          <h2
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 1 }}
             style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-6xl font-bold text-yellow-400 mb-16 drop-shadow-[3px_3px_0px_#000]"
+            className="text-5xl md:text-6xl font-bold text-yellow-400 mb-12 drop-shadow-[3px_3px_0px_#000]"
           >
             Features
-          </h2>
+          </motion.h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-gray-800/80 p-8 rounded-2xl shadow-lg border border-sky-400/30 backdrop-blur-md hover:shadow-sky-400/50 transition-all"
-            >
-              <h3 className="text-3xl font-bold text-sky-300 mb-4">
-                Team Matching
-              </h3>
-              <p className="text-gray-300 text-lg">
-                Match with teammates based on skills, timezone, and project
-                ideas using our smart tag system.
-              </p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-gray-800/80 p-8 rounded-2xl shadow-lg border border-pink-400/30 backdrop-blur-md hover:shadow-pink-400/50 transition-all"
-            >
-              <h3 className="text-3xl font-bold text-pink-300 mb-4">
-                Built-in Planner
-              </h3>
-              <p className="text-gray-300 text-lg">
-                Plan and track your hackathon projects with our integrated
-                Trello-like project board.
-              </p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-gray-800/80 p-8 rounded-2xl shadow-lg border border-yellow-400/30 backdrop-blur-md hover:shadow-yellow-400/50 transition-all"
-            >
-              <h3 className="text-3xl font-bold text-yellow-300 mb-4">
-                Leaderboards
-              </h3>
-              <p className="text-gray-300 text-lg">
-                See top teams, track progress, and celebrate achievements in
-                live hackathon leaderboards.
-              </p>
-            </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {[ 
+              {
+                title: "Team Matching",
+                color: "sky",
+                text: "Match with teammates based on skills, timezone, and project ideas using our smart tag system.",
+              },
+              {
+                title: "Built-in Planner",
+                color: "pink",
+                text: "Plan and track your hackathon projects with our integrated Trello-like project board.",
+              },
+              {
+                title: "Leaderboards",
+                color: "yellow",
+                text: "See top teams, track progress, and celebrate achievements in live hackathon leaderboards.",
+              },
+            ].map((f, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.05 }}
+                className={`bg-gray-800/80 p-8 rounded-2xl shadow-lg border border-${f.color}-400/30 hover:shadow-${f.color}-400/50 transition-all`}
+              >
+                <h3 className={`text-3xl font-bold text-${f.color}-300 mb-4`}>
+                  {f.title}
+                </h3>
+                <p className="text-gray-300 text-lg">{f.text}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

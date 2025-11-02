@@ -6,27 +6,35 @@ import { Textarea } from "@/components/ui/textarea";
 
 const ProfilePage = () => {
   const [bio, setBio] = useState("");
-  const [skills, setSkills] = useState([""]);
-  const [interests, setInterests] = useState([""]);
+  const [skills, setSkills] = useState([]);
+  const [interests, setInterests] = useState([]);
+  const [newSkill, setNewSkill] = useState("");
+  const [newInterest, setNewInterest] = useState("");
   const [availability, setAvailability] = useState(true);
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleAddSkill = () => setSkills([...skills, ""]);
-  const handleRemoveSkill = (index) => setSkills(skills.filter((_, i) => i !== index));
-  const handleSkillChange = (index, value) => {
-    const updated = [...skills];
-    updated[index] = value;
-    setSkills(updated);
+  const handleAddSkill = () => {
+    if (newSkill.trim() !== "") {
+      setSkills([...skills, newSkill.trim()]);
+      setNewSkill("");
+    }
   };
 
-  const handleAddInterest = () => setInterests([...interests, ""]);
-  const handleRemoveInterest = (index) => setInterests(interests.filter((_, i) => i !== index));
-  const handleInterestChange = (index, value) => {
-    const updated = [...interests];
-    updated[index] = value;
-    setInterests(updated);
+  const handleRemoveSkill = (skill) => {
+    setSkills(skills.filter((s) => s !== skill));
+  };
+
+  const handleAddInterest = () => {
+    if (newInterest.trim() !== "") {
+      setInterests([...interests, newInterest.trim()]);
+      setNewInterest("");
+    }
+  };
+
+  const handleRemoveInterest = (interest) => {
+    setInterests(interests.filter((i) => i !== interest));
   };
 
   const handleSave = (e) => {
@@ -40,7 +48,7 @@ const ProfilePage = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* Animated Background */}
+      {/* Animated Split Background */}
       <div className="absolute inset-0 flex">
         <motion.div
           initial={{ backgroundPosition: "0% 50%" }}
@@ -56,143 +64,156 @@ const ProfilePage = () => {
         />
       </div>
 
-      {/* Scrollable Container */}
-      <div className="relative z-10 flex justify-center items-center h-full w-full overflow-y-auto py-10 px-4">
+      {/* Centered Profile Card */}
+      <div className="relative z-10 flex justify-center items-center h-full w-full px-4">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/40 rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.2)] p-10"
+          className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8"
         >
           {/* Title */}
           <h1
             style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-6xl font-extrabold text-yellow-400 drop-shadow-[3px_3px_0px_#000] text-center mb-2"
+            className="text-4xl font-extrabold text-center text-yellow-500 mb-2"
           >
-            HACKMATE
+            HACKMATE PROFILE
           </h1>
-          <p className="text-white/90 mb-10 italic text-center text-lg">
+          <p className="text-gray-700 mb-6 italic text-center text-lg">
             Build your profile and connect with teammates 🌐
           </p>
 
           {/* Form */}
-          <form onSubmit={handleSave} className="space-y-8">
+          <form onSubmit={handleSave} className="space-y-6">
             {/* Bio */}
             <div>
-              <label className="block text-white/80 mb-2 text-sm">Bio</label>
+              <label className="block text-gray-700 font-semibold mb-2">Bio</label>
               <Textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value.slice(0, 300))}
-                placeholder="Full-stack developer passionate about hackathons and open source projects..."
-                className="bg-transparent text-white border border-white/50 placeholder-white/70 focus:border-yellow-400 focus:ring-yellow-400 w-full"
+                placeholder="Full-stack developer passionate about hackathons..."
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 rows={3}
-                maxLength={300}
               />
-              <p className="text-right text-xs text-white/60 mt-1">
-                {bio.length}/300 characters
-              </p>
+              <p className="text-right text-xs text-gray-500 mt-1">{bio.length}/300</p>
             </div>
 
-            {/* Skills */}
-            <div>
-              <label className="block text-white/80 mb-2 text-sm">Skills</label>
-              <div className="space-y-2">
-                {skills.map((skill, i) => (
-                  <div key={i} className="flex gap-2">
-                    <Input
-                      value={skill}
-                      onChange={(e) => handleSkillChange(i, e.target.value)}
-                      placeholder="e.g. React"
-                      className="bg-transparent text-white border border-white/50 placeholder-white/70 focus:border-yellow-400 focus:ring-yellow-400 w-full"
-                    />
-                    {i > 0 && (
-                      <Button
-                        type="button"
-                        onClick={() => handleRemoveSkill(i)}
-                        className="border border-white/60 text-white bg-transparent hover:bg-white/20 transition-all"
-                      >
-                        ✕
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  onClick={handleAddSkill}
-                  className="border border-white/60 text-white bg-transparent hover:bg-white/20 font-semibold transition-all w-full"
-                >
-                  + Add Skill
-                </Button>
+            {/* Skills & Interests - Side by Side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Skills */}
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Skills</label>
+                <div className="flex gap-2 mb-2">
+                  <Input
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    placeholder="e.g. React"
+                    className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleAddSkill}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-xl"
+                  >
+                    +
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {skills.map((skill, i) => (
+                    <span
+                      key={i}
+                      className="bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+                    >
+                      {skill}
+                      <button onClick={() => handleRemoveSkill(skill)}>✕</button>
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Interests */}
-            <div>
-              <label className="block text-white/80 mb-2 text-sm">Interests</label>
-              <div className="space-y-2">
-                {interests.map((interest, i) => (
-                  <div key={i} className="flex gap-2">
-                    <Input
-                      value={interest}
-                      onChange={(e) => handleInterestChange(i, e.target.value)}
-                      placeholder="e.g. Hackathons"
-                      className="bg-transparent text-white border border-white/50 placeholder-white/70 focus:border-yellow-400 focus:ring-yellow-400 w-full"
-                    />
-                    {i > 0 && (
-                      <Button
-                        type="button"
-                        onClick={() => handleRemoveInterest(i)}
-                        className="border border-white/60 text-white bg-transparent hover:bg-white/20 transition-all"
-                      >
-                        ✕
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  onClick={handleAddInterest}
-                  className="border border-white/60 text-white bg-transparent hover:bg-white/20 font-semibold transition-all w-full"
-                >
-                  + Add Interest
-                </Button>
+              {/* Interests */}
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Interests</label>
+                <div className="flex gap-2 mb-2">
+                  <Input
+                    value={newInterest}
+                    onChange={(e) => setNewInterest(e.target.value)}
+                    placeholder="e.g. Hackathons"
+                    className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleAddInterest}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-xl"
+                  >
+                    +
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {interests.map((interest, i) => (
+                    <span
+                      key={i}
+                      className="bg-sky-200 text-sky-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+                    >
+                      {interest}
+                      <button onClick={() => handleRemoveInterest(interest)}>✕</button>
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Availability */}
-            <div className="flex items-center justify-between text-white/80">
-              <label className="text-sm">Availability</label>
-              <Button
-                type="button"
-                onClick={() => setAvailability(!availability)}
-                className="border border-white/60 text-white bg-transparent hover:bg-white/20 font-semibold transition-all px-4 py-1 rounded-lg"
-              >
-                {availability
-                  ? "Looking for a Team 🤝"
-                  : "Looking for Team Members 🚀"}
-              </Button>
+            <div className="text-center mt-4">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Availability
+              </label>
+              <div className="flex justify-center gap-4">
+                <Button
+                  type="button"
+                  onClick={() => setAvailability(true)}
+                  className={`px-5 py-2 rounded-xl font-medium ${
+                    availability
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  Looking for a Team 🤝
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setAvailability(false)}
+                  className={`px-5 py-2 rounded-xl font-medium ${
+                    !availability
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  Looking for Members 🚀
+                </Button>
+              </div>
             </div>
 
-            {/* Links */}
+            {/* GitHub & LinkedIn */}
             <div>
-              <label className="block text-white/80 mb-2 text-sm">GitHub</label>
+              <label className="block text-gray-700 font-semibold mb-2">GitHub</label>
               <Input
                 type="url"
                 value={github}
                 onChange={(e) => setGithub(e.target.value)}
                 placeholder="https://github.com/yourusername"
-                className="bg-transparent text-white border border-white/50 placeholder-white/70 focus:border-yellow-400 focus:ring-yellow-400 w-full"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 w-full rounded-xl"
               />
             </div>
 
             <div>
-              <label className="block text-white/80 mb-2 text-sm">LinkedIn</label>
+              <label className="block text-gray-700 font-semibold mb-2">LinkedIn</label>
               <Input
                 type="url"
                 value={linkedin}
                 onChange={(e) => setLinkedin(e.target.value)}
                 placeholder="https://www.linkedin.com/in/yourusername/"
-                className="bg-transparent text-white border border-white/50 placeholder-white/70 focus:border-yellow-400 focus:ring-yellow-400 w-full"
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 w-full rounded-xl"
               />
             </div>
 
@@ -200,24 +221,13 @@ const ProfilePage = () => {
             <Button
               type="submit"
               disabled={isSaving}
-              className="w-full border border-white/60 text-white bg-transparent hover:bg-white/20 font-semibold transition-all py-3 rounded-xl mt-4"
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 rounded-xl mt-4"
             >
               {isSaving ? "Saving..." : "Save Profile"}
             </Button>
           </form>
         </motion.div>
       </div>
-
-      {/* Glow Effect */}
-      <motion.div
-        initial={{ opacity: 0.2, scale: 1 }}
-        animate={{ opacity: 0.4, scale: 1.3 }}
-        transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
-        className="absolute top-1/2 left-1/2 w-[700px] h-[700px]
-                   bg-gradient-to-r from-yellow-400 via-pink-400 to-sky-400
-                   rounded-full blur-[250px] -translate-x-1/2 -translate-y-1/2
-                   z-0 opacity-30"
-      />
     </div>
   );
 };
