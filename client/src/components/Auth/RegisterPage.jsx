@@ -3,19 +3,35 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [isRegistering, setIsRegistering] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
 
-  const handleRegister = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = async (e) => {
     e.preventDefault();
     setIsRegistering(true);
-    setTimeout(() => {
-      setIsRegistering(false);
+    try {
+      await axios.post("http://localhost:3000/api/hackmate/auth/register", formData);
       alert("✅ Registration Successful!");
       navigate("/login");
-    }, 1500);
+    } catch (error) {
+      alert("❌ Registration failed! Please try again.");
+      console.error(error);
+    } finally {
+      setIsRegistering(false);
+    }
   };
 
   return (
@@ -64,6 +80,9 @@ const RegisterPage = () => {
               </label>
               <Input
                 type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 placeholder="Enter your first name"
                 className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
@@ -76,6 +95,9 @@ const RegisterPage = () => {
               </label>
               <Input
                 type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
                 placeholder="Enter your last name"
                 className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
@@ -88,6 +110,9 @@ const RegisterPage = () => {
               </label>
               <Input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Enter your email"
                 className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
@@ -100,6 +125,9 @@ const RegisterPage = () => {
               </label>
               <Input
                 type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 placeholder="Enter your password"
                 className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required

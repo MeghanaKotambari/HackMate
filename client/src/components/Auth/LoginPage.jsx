@@ -3,19 +3,34 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoggingIn(true);
-    setTimeout(() => {
-      setIsLoggingIn(false);
+    try {
+      const res = await axios.post("http://localhost:3000/api/hackmate/auth/login", formData);
       alert("✅ Login successful!");
+      localStorage.setItem("token", res.data.token); // store token if backend returns one
       navigate("/profile");
-    }, 1500);
+    } catch (error) {
+      alert("❌ Login failed! Please check your credentials.");
+      console.error(error);
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   return (
@@ -64,6 +79,9 @@ const LoginPage = () => {
               </label>
               <Input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Enter your email"
                 className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required
@@ -76,6 +94,9 @@ const LoginPage = () => {
               </label>
               <Input
                 type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 placeholder="Enter your password"
                 className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 required

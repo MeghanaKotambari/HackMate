@@ -1,55 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const JoinTeam = () => {
-  const [form, setForm] = useState({
-    teamName: "",
-    hackathonName: "",
-    hackathonStartDate: "",
-    hackathonEndDate: "",
-    leader: "",
-    maxMembers: "",
-    requiredSkills: [],
-    description: "",
-    isOpen: true,
-  });
+const Jointeam = () => {
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const [skillInput, setSkillInput] = useState("");
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSkillAdd = () => {
-    if (skillInput.trim() !== "") {
-      setForm({
-        ...form,
-        requiredSkills: [...form.requiredSkills, skillInput.trim()],
-      });
-      setSkillInput("");
-    }
-  };
-
-  const handleSkillRemove = (skill) => {
-    setForm({
-      ...form,
-      requiredSkills: form.requiredSkills.filter((s) => s !== skill),
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("✅ Team details submitted successfully!");
-    console.log("Team Data:", form);
-  };
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/hackmate/team/getAllTeams");
+        setTeams(res.data.teams || []);
+      } catch (err) {
+        console.error("Error fetching teams:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTeams();
+  }, []);
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* 🔵 Animated Split Background */}
+      {/* Background */}
       <div className="absolute inset-0 flex">
         <motion.div
           initial={{ backgroundPosition: "0% 50%" }}
@@ -65,184 +42,89 @@ const JoinTeam = () => {
         />
       </div>
 
-      {/* 🟡 Scrollable Card Section */}
-      <div className="relative z-10 flex justify-center items-center h-full w-full px-4 py-8 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 my-10"
+      {/* Content */}
+      <div className="relative z-10 p-10 overflow-y-auto h-full">
+        <h1
+          className="text-4xl font-extrabold text-center text-yellow-400 mb-8"
+          style={{ fontFamily: "'Bungee', sans-serif" }}
         >
-          {/* ✨ Title */}
-          <h1
-            style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-3xl font-extrabold text-center text-yellow-500 mb-2"
-          >
-            Join or Manage a Team
-          </h1>
-          <p className="text-gray-700 mb-6 italic text-center text-sm">
-            Manage existing hackathon team details 🧑‍💻
-          </p>
+          Available Hackathon Teams
+        </h1>
 
-          {/* 🧾 Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Team Name */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Team Name
-              </label>
-              <Input
-                name="teamName"
-                value={form.teamName}
-                onChange={handleChange}
-                placeholder="Enter your team name"
-                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                required
-              />
-            </div>
-
-            {/* Hackathon Name */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Hackathon Name
-              </label>
-              <Input
-                name="hackathonName"
-                value={form.hackathonName}
-                onChange={handleChange}
-                placeholder="Enter hackathon name"
-                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                required
-              />
-            </div>
-
-            {/* Dates */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Start Date
-                </label>
-                <Input
-                  type="date"
-                  name="hackathonStartDate"
-                  value={form.hackathonStartDate}
-                  onChange={handleChange}
-                  className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  End Date
-                </label>
-                <Input
-                  type="date"
-                  name="hackathonEndDate"
-                  value={form.hackathonEndDate}
-                  onChange={handleChange}
-                  className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Max Members */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Max Members
-              </label>
-              <Input
-                type="number"
-                name="maxMembers"
-                value={form.maxMembers}
-                onChange={handleChange}
-                placeholder="e.g. 5"
-                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                required
-              />
-            </div>
-
-            {/* Required Skills (Tag System like CreateTeam skills/interests) */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Required Skills
-              </label>
-              <div className="flex gap-2">
-                <Input
-                  value={skillInput}
-                  onChange={(e) => setSkillInput(e.target.value)}
-                  placeholder="Add skill (e.g. React)"
-                  className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                />
-                <Button
-                  type="button"
-                  onClick={handleSkillAdd}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl px-4"
-                >
-                  Add
-                </Button>
-              </div>
-
-              {/* Display added skills */}
-              <div className="flex flex-wrap gap-2 mt-2">
-                {form.requiredSkills.map((skill, idx) => (
-                  <motion.span
-                    key={idx}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="bg-yellow-200 text-yellow-900 font-semibold px-3 py-1 rounded-full text-sm flex items-center gap-1"
-                  >
-                    {skill}
-                    <button
-                      type="button"
-                      onClick={() => handleSkillRemove(skill)}
-                      className="text-red-600 font-bold"
-                    >
-                      ×
-                    </button>
-                  </motion.span>
-                ))}
-              </div>
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Description
-              </label>
-              <Textarea
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="Write something about your team..."
-                rows={3}
-                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-              />
-            </div>
-
-            {/* isOpen Toggle */}
-            <div className="flex items-center justify-between">
-              <label className="text-gray-700 font-semibold">Team Open for Joining?</label>
-              <Switch
-                checked={form.isOpen}
-                onCheckedChange={(checked) => setForm({ ...form, isOpen: checked })}
-              />
-            </div>
-
-            {/* Submit Button */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                type="submit"
-                className="w-full py-3 text-lg font-bold bg-yellow-500 text-white rounded-xl shadow-[0_0_20px_rgba(255,255,0,0.4)] hover:bg-yellow-600 hover:shadow-[0_0_30px_rgba(255,255,0,0.6)] transition-all"
+        {loading ? (
+          <p className="text-center text-white italic">Loading teams...</p>
+        ) : teams.length === 0 ? (
+          <p className="text-center text-gray-200 italic">No teams available yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {teams.map((team) => (
+              <motion.div
+                key={team._id}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
               >
-                Submit Team Details
-              </Button>
-            </motion.div>
-          </form>
-        </motion.div>
+                <Card className="bg-white/90 backdrop-blur-lg shadow-2xl rounded-2xl border border-gray-200 hover:shadow-yellow-400/40 transition-all">
+                  <CardContent className="p-6">
+                    <h2 className="text-2xl font-bold text-yellow-600 mb-2">
+                      {team.teamName}
+                    </h2>
+
+                    <p className="text-gray-700 font-semibold mb-1">
+                      🏆 {team.hackathonName}
+                    </p>
+                    <p className="text-gray-600 text-sm mb-1">
+                      🗓{" "}
+                      {new Date(team.hackathonStartDate).toLocaleDateString()} →{" "}
+                      {new Date(team.hackathonEndDate).toLocaleDateString()}
+                    </p>
+
+                    {/* Leader */}
+                    <p className="text-gray-800 text-sm mt-2">
+                      👑 Leader:{" "}
+                      <span className="font-semibold">
+                        {team.leader?.firstName} {team.leader?.lastName}
+                      </span>
+                    </p>
+
+                    {/* Members */}
+                    <p className="text-gray-700 text-sm mt-1">
+                      👥 Members: {team.members?.length || 0}/{team.maxMembers}
+                    </p>
+
+                    {/* Skills */}
+                    <div className="mt-3">
+                      <p className="text-sm font-semibold text-gray-700 mb-1">
+                        Required Skills:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {team.requiredSkills.map((skill, i) => (
+                          <span
+                            key={i}
+                            className="bg-yellow-200 text-yellow-900 px-2 py-1 rounded-full text-xs font-semibold"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Button */}
+                    <Button
+                      onClick={() => navigate(`/team/${team._id}`)}
+                      className="mt-5 w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl transition-all"
+                    >
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default JoinTeam;
+export default Jointeam;
