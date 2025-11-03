@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/authSlice";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ const RegisterPage = () => {
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,8 +26,12 @@ const RegisterPage = () => {
     e.preventDefault();
     setIsRegistering(true);
     try {
-      await axios.post("http://localhost:3000/api/hackmate/auth/register", formData);
+      const res = await axios.post(
+        "http://localhost:3000/api/hackmate/auth/register",
+        formData
+      );
       alert("✅ Registration Successful!");
+      dispatch(setUser(res.data.user));
       navigate("/login");
     } catch (error) {
       alert("❌ Registration failed! Please try again.");

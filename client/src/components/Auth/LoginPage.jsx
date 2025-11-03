@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/authSlice";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,9 +24,12 @@ const LoginPage = () => {
     e.preventDefault();
     setIsLoggingIn(true);
     try {
-      const res = await axios.post("http://localhost:3000/api/hackmate/auth/login", formData);
+      const res = await axios.post(
+        "http://localhost:3000/api/hackmate/auth/login",
+        formData
+      );
       alert("✅ Login successful!");
-      localStorage.setItem("token", res.data.token); // store token if backend returns one
+      dispatch(setUser(res.data.user));
       navigate("/profile");
     } catch (error) {
       alert("❌ Login failed! Please check your credentials.");
