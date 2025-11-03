@@ -57,9 +57,14 @@ const ProfilePage = () => {
         linkedin,
       };
 
-      const res = await axios.post("http://localhost:3000/api/hackmate/profile/create", payload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await axios.post(
+        "http://localhost:3000/api/hackmate/profile/create",
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
 
       alert("✅ Profile saved successfully!");
       console.log("Profile created:", res.data);
@@ -110,7 +115,9 @@ const ProfilePage = () => {
           <form onSubmit={handleSave} className="space-y-6">
             {/* Bio */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">Bio</label>
+              <label className="block text-gray-700 font-semibold mb-2">
+                Bio
+              </label>
               <Textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value.slice(0, 300))}
@@ -118,14 +125,18 @@ const ProfilePage = () => {
                 className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 w-full rounded-xl"
                 rows={3}
               />
-              <p className="text-right text-xs text-gray-500 mt-1">{bio.length}/300</p>
+              <p className="text-right text-xs text-gray-500 mt-1">
+                {bio.length}/300
+              </p>
             </div>
 
             {/* Skills & Interests */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Skills */}
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Skills</label>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Skills
+                </label>
                 <div className="flex gap-2 mb-2">
                   <Input
                     value={newSkill}
@@ -148,7 +159,12 @@ const ProfilePage = () => {
                       className="bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
                     >
                       {skill}
-                      <button type="button" onClick={() => handleRemoveSkill(skill)}>✕</button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSkill(skill)}
+                      >
+                        ✕
+                      </button>
                     </span>
                   ))}
                 </div>
@@ -156,7 +172,9 @@ const ProfilePage = () => {
 
               {/* Interests */}
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Interests</label>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Interests
+                </label>
                 <div className="flex gap-2 mb-2">
                   <Input
                     value={newInterest}
@@ -179,7 +197,12 @@ const ProfilePage = () => {
                       className="bg-sky-200 text-sky-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
                     >
                       {interest}
-                      <button type="button" onClick={() => handleRemoveInterest(interest)}>✕</button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveInterest(interest)}
+                      >
+                        ✕
+                      </button>
                     </span>
                   ))}
                 </div>
@@ -219,7 +242,9 @@ const ProfilePage = () => {
 
             {/* GitHub & LinkedIn */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">GitHub</label>
+              <label className="block text-gray-700 font-semibold mb-2">
+                GitHub
+              </label>
               <Input
                 type="url"
                 value={github}
@@ -230,7 +255,9 @@ const ProfilePage = () => {
             </div>
 
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">LinkedIn</label>
+              <label className="block text-gray-700 font-semibold mb-2">
+                LinkedIn
+              </label>
               <Input
                 type="url"
                 value={linkedin}
