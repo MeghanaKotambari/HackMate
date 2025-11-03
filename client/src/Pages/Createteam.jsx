@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
 
 const CreateTeam = () => {
   const [form, setForm] = useState({
@@ -15,14 +16,46 @@ const CreateTeam = () => {
     description: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("✅ Team created successfully!");
-    console.log("Team Created:", form);
+    setIsSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("token"); // optional auth token if used
+      const res = await axios.post(
+        "http://localhost:3000/api/hackmate/team/createTeam",
+        form,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+
+      alert("✅ Team created successfully!");
+      console.log("Team Created:", res.data);
+      setForm({
+        teamName: "",
+        hackathonName: "",
+        startDate: "",
+        endDate: "",
+        maxMembers: "",
+        requiredSkills: "",
+        description: "",
+      });
+    } catch (error) {
+      console.error("Error creating team:", error);
+      alert("❌ Failed to create team. Please try again!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -65,7 +98,9 @@ const CreateTeam = () => {
           {/* 🧾 Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">Team Name</label>
+              <label className="block text-gray-700 font-semibold mb-1">
+                Team Name
+              </label>
               <Input
                 name="teamName"
                 value={form.teamName}
@@ -165,9 +200,10 @@ const CreateTeam = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full py-3 text-lg font-bold bg-yellow-500 text-white rounded-xl shadow-[0_0_20px_rgba(255,255,0,0.4)] hover:bg-yellow-600 hover:shadow-[0_0_30px_rgba(255,255,0,0.6)] transition-all"
               >
-                Create Team
+                {isSubmitting ? "Creating..." : "Create Team"}
               </Button>
             </motion.div>
           </form>
