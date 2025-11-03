@@ -5,6 +5,7 @@ import CreateTeam from '@/Pages/Createteam'
 import HomePage from '@/Pages/HomePage'
 import JoinTeam from '@/Pages/Jointeam'
 import LandingPage from '@/Pages/LandingPage'
+import UserDashboard from '@/Pages/UserDashboard'
 import ViewDetails from '@/Pages/ViewDetails'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
@@ -21,6 +22,7 @@ const AppRoutes = () => {
               <Route path="/createteam" element={<CreateTeam/>}/>
               <Route path="/jointeam" element={<JoinTeam/>}/>
               <Route path="/viewdetails" element={<ViewDetails/>}/>
+              <Route path="/user" element={<UserDashboard/>}/>
       </Routes>
     </div>
   )
