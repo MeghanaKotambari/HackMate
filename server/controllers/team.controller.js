@@ -84,7 +84,6 @@ module.exports.getAllTeam = async (req, res) => {
     }
 
     console.log(userId);
-    
 
     return res.status(200).json({
       message: "Teams Fetched Successfully",
@@ -124,3 +123,34 @@ module.exports.getTeamById = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error });
   }
 };
+
+
+module.exports.getMyteams = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(404).json({ message: "User Id not found" });
+    }
+
+    // Fetch teams where user is leader or a member
+    const teams = await teamModel.find({
+      $or: [
+        { leader: userId },
+        { "members.userId": userId }
+      ]
+    })
+      .populate("leader", "name email") // populate leader info
+      .populate("members.userId", "name email") // populate members info
+      .sort({ createdAt: -1 }); // latest teams first
+
+    return res.status(200).json({
+      success: true,
+      teams,
+    });
+  } catch (error) {
+    console.error("Error getting my teams:", error.message);
+    return res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
