@@ -8,17 +8,18 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 const ViewDetails = () => {
   const { id } = useParams();
   const [team, setTeam] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Fetch team details
   useEffect(() => {
     const fetchTeam = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/hackmate/team/getTeam/${id}`,{
-            headers : {
-              "Content-Type" : "application/json"
-            },
-            withCredentials : true
+          `http://localhost:3000/api/hackmate/team/getTeam/${id}`,
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
           }
         );
         setTeam(res.data.team);
@@ -28,6 +29,33 @@ const ViewDetails = () => {
     };
     fetchTeam();
   }, [id]);
+
+  // Join Team Request API
+  const handleJoinTeam = async () => {
+    if (!team?.isOpen) return alert("❌ Team is not open for joining.");
+
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        `http://localhost:3000/api/hackmate/join/${id}/request`,
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      alert("✅ Join request sent successfully!");
+      console.log("Join Request Response:", res.data);
+    } catch (error) {
+      console.error("❌ Error sending join request:", error);
+      if (error.response?.data?.message)
+        alert(`⚠️ ${error.response.data.message}`);
+      else alert("❌ Failed to send join request. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!team) return <p className="text-center mt-10">Loading team details...</p>;
 
@@ -179,15 +207,15 @@ const ViewDetails = () => {
           </Button>
 
           <Button
-            onClick={() => alert("✅ Successfully joined the team!")}
-            disabled={!team.isOpen}
+            onClick={handleJoinTeam}
+            disabled={!team.isOpen || loading}
             className={`w-full sm:w-1/2 font-bold rounded-xl transition-all ${
               team.isOpen
                 ? "bg-yellow-500 hover:bg-yellow-600 text-white"
                 : "bg-gray-400 cursor-not-allowed text-gray-200"
             }`}
           >
-            🤝 Join Team
+            {loading ? "⏳ Sending..." : "🤝 Join Team"}
           </Button>
         </div>
       </div>

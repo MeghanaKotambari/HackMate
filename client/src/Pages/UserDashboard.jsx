@@ -1,57 +1,82 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const UserDashboard = () => {
-  // 🧑 Dummy User Data
-  const user = {
-    name: "Leo Johnson",
-    email: "leo.johnson@example.com",
-    github: "https://github.com/leo-johnson",
-    linkedin: "https://linkedin.com/in/leo-johnson",
-    bio: "Full-stack developer passionate about building and participating in hackathons.",
-    skills: ["React", "Node.js", "MongoDB", "TailwindCSS"],
-    interests: ["Hackathons", "Open Source", "Team Collaboration"],
+  const [user, setUser] = useState(null);
+  const [teams, setTeams] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Fetch all data on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        // 1️⃣ Get user profile
+        const userRes = await axios.get("http://localhost:3000/api/hackmate/profile/getProfile", {
+          withCredentials: true,
+        });
+        setUser(userRes.data.profile);
+
+        // 2️⃣ Get user's teams
+        const teamsRes = await axios.get("http://localhost:3000/api/hackmate/team/getMyTeams", {
+          headers : {
+            "Content-Type" : "application/json",
+          },
+          withCredentials : true
+        });
+        setTeams(teamsRes.data.teams || []);
+
+        // 3️⃣ For each team (leader), get join requests
+        let allRequests = [];
+        for (const team of teamsRes.data.teams || []) {
+          try {
+            const reqRes = await axios.get(
+              `http://localhost:3000/api/hackmate/join/team/${team._id}`,
+              { withCredentials: true }
+            );
+            allRequests = [...allRequests, ...reqRes.data.requests];
+          } catch {
+            continue; // skip if no requests
+          }
+        }
+        setRequests(allRequests);
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // ✅ Handle Accept / Reject
+  const handleRequestAction = async (requestId, action) => {
+    try {
+      await axios.post(
+        `http://localhost:3000/api/hackmate/join/${requestId}/action`,
+        { action },
+        { withCredentials: true }
+      );
+      alert(`✅ Request ${action}ed successfully`);
+      setRequests((prev) => prev.filter((req) => req._id !== requestId));
+    } catch (err) {
+      console.error(`Error handling request:`, err);
+      alert("❌ Failed to process request.");
+    }
   };
 
-  // 👥 Dummy Teams
-  const teams = [
-    {
-      id: 1,
-      name: "Code Avengers",
-      hackathon: "HackX 2025",
-      members: 4,
-      maxMembers: 5,
-      status: "Open",
-    },
-    {
-      id: 2,
-      name: "Byte Ninjas",
-      hackathon: "DevSprint",
-      members: 5,
-      maxMembers: 5,
-      status: "Closed",
-    },
-  ];
-
-  // 📩 Dummy Join Requests
-  const requests = [
-    {
-      id: 1,
-      name: "Meghana Kotambari",
-      requestedTeam: "Code Avengers",
-      skills: ["React", "UI Design"],
-      message: "I’d love to join your team and help with the frontend!",
-    },
-    {
-      id: 2,
-      name: "Vivek Nairy",
-      requestedTeam: "Byte Ninjas",
-      skills: ["Node.js", "APIs"],
-      message: "Backend developer here, excited to collaborate!",
-    },
-  ];
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen text-lg font-semibold text-gray-700">
+        Loading Dashboard...
+      </div>
+    );
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
@@ -71,155 +96,169 @@ const UserDashboard = () => {
         />
       </div>
 
-      {/* 🧭 Dashboard Content */}
+      {/* 📊 Dashboard Content */}
       <div className="relative z-10 h-full w-full overflow-y-auto p-10 flex flex-col items-center space-y-10">
-
-        {/* 👤 User Details (Top Center) */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="w-full max-w-4xl bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-10"
-        >
-          <h1
-            style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-4xl font-bold text-yellow-500 mb-8 text-center drop-shadow-sm"
-          >
-            👤 User Dashboard
-          </h1>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
-            <div>
-              <p><strong>Name:</strong> {user.name}</p>
-              <p><strong>Email:</strong> {user.email}</p>
-              <p><strong>Bio:</strong> {user.bio}</p>
-            </div>
-            <div>
-              <p><strong>Skills:</strong> {user.skills.join(", ")}</p>
-              <p><strong>Interests:</strong> {user.interests.join(", ")}</p>
-              <div className="flex gap-4 mt-3">
-                <a
-                  href={user.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 font-semibold hover:text-blue-800 underline transition-all"
-                >
-                  GitHub
-                </a>
-                <a
-                  href={user.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 font-semibold hover:text-blue-800 underline transition-all"
-                >
-                  LinkedIn
-                </a>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* 🧩 Teams & Requests Side by Side */}
-        <div className="grid md:grid-cols-2 gap-10 w-full max-w-7xl">
-
-          {/* 🧑‍🤝‍🧑 Your Teams */}
+        
+        {/* 👤 User Info */}
+        {user && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.2 }}
+            transition={{ duration: 0.8 }}
+            className="w-full max-w-4xl bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-10"
+          >
+            <h1
+              style={{ fontFamily: "'Bungee', sans-serif" }}
+              className="text-4xl font-bold text-yellow-500 mb-8 text-center"
+            >
+              👤 User Dashboard
+            </h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
+              <div>
+                <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Bio:</strong> {user.bio || "—"}</p>
+              </div>
+              <div>
+                <p><strong>Skills:</strong> {user.skills?.join(", ") || "—"}</p>
+                <p><strong>Interests:</strong> {user.interests?.join(", ") || "—"}</p>
+                <div className="flex gap-4 mt-3">
+                  {user.github && (
+                    <a
+                      href={user.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 font-semibold hover:text-blue-800 underline"
+                    >
+                      GitHub
+                    </a>
+                  )}
+                  {user.linkedin && (
+                    <a
+                      href={user.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 font-semibold hover:text-blue-800 underline"
+                    >
+                      LinkedIn
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* 🧩 Teams + Requests */}
+        <div className="grid md:grid-cols-2 gap-10 w-full max-w-7xl">
+          {/* 👥 Your Teams */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9 }}
             className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-8"
           >
             <h2
               style={{ fontFamily: "'Bungee', sans-serif" }}
-              className="text-3xl font-bold text-sky-600 mb-6 text-center drop-shadow-sm"
+              className="text-3xl font-bold text-sky-600 mb-6 text-center"
             >
               🧩 Your Teams
             </h2>
-
-            <div className="grid sm:grid-cols-1 gap-6">
-              {teams.map((team) => (
-                <motion.div
-                  key={team.id}
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ type: "spring", stiffness: 120 }}
-                >
-                  <Card className="bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-300 rounded-2xl shadow-md hover:shadow-xl transition-all h-full">
-                    <CardContent className="p-6 flex flex-col justify-between h-full">
+            {teams.length > 0 ? (
+              <div className="grid gap-6">
+                {teams.map((team) => (
+                  <Card
+                    key={team._id}
+                    className="bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-300 rounded-2xl shadow-md hover:shadow-xl transition-all"
+                  >
+                    <CardContent className="p-6 flex flex-col justify-between">
                       <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-1">{team.name}</h3>
-                        <p className="text-sm text-gray-600">Hackathon: {team.hackathon}</p>
+                        <h3 className="text-xl font-bold text-gray-800 mb-1">
+                          {team.teamName}
+                        </h3>
                         <p className="text-sm text-gray-600">
-                          Members: {team.members}/{team.maxMembers}
+                          Hackathon: {team.hackathonName}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Members: {team.members?.length}/{team.maxMembers}
                         </p>
                         <p
                           className={`text-sm font-semibold mt-1 ${
-                            team.status === "Open" ? "text-green-600" : "text-red-500"
+                            team.isOpen ? "text-green-600" : "text-red-500"
                           }`}
                         >
-                          Status: {team.status}
+                          Status: {team.isOpen ? "Open" : "Closed"}
                         </p>
                       </div>
-
-                      <Button className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white w-full transition-all">
+                      <Button className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white w-full">
                         View Team
                       </Button>
                     </CardContent>
                   </Card>
-                </motion.div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-600 italic">No teams yet.</p>
+            )}
           </motion.div>
 
           {/* 📩 Join Requests */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.4 }}
+            transition={{ duration: 0.9 }}
             className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-8"
           >
             <h2
               style={{ fontFamily: "'Bungee', sans-serif" }}
-              className="text-3xl font-bold text-green-500 mb-6 text-center drop-shadow-sm"
+              className="text-3xl font-bold text-green-500 mb-6 text-center"
             >
               📩 Join Requests
             </h2>
 
-            <div className="grid sm:grid-cols-1 gap-6">
-              {requests.map((req) => (
-                <motion.div
-                  key={req.id}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 120 }}
-                >
-                  <Card className="bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-300 rounded-2xl shadow-md hover:shadow-xl transition-all h-full">
-                    <CardContent className="p-6 flex flex-col justify-between h-full">
+            {requests.length > 0 ? (
+              <div className="grid gap-6">
+                {requests.map((req) => (
+                  <Card
+                    key={req._id}
+                    className="bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-300 rounded-2xl shadow-md hover:shadow-xl transition-all"
+                  >
+                    <CardContent className="p-6 flex flex-col justify-between">
                       <div>
-                        <h3 className="text-lg font-bold text-gray-800 mb-2">{req.name}</h3>
+                        <h3 className="text-lg font-bold text-gray-800 mb-2">
+                          {req.userId.firstName} {req.userId.lastName}
+                        </h3>
                         <p className="text-sm text-gray-600">
-                          <strong>Requested Team:</strong> {req.requestedTeam}
+                          <strong>Team:</strong> {req.teamId.teamName}
                         </p>
                         <p className="text-sm text-gray-600">
-                          <strong>Skills:</strong> {req.skills.join(", ")}
-                        </p>
-                        <p className="text-sm italic text-gray-700 mt-2 mb-4">
-                          “{req.message}”
+                          <strong>Skills:</strong> {req.userId.skills?.join(", ") || "—"}
                         </p>
                       </div>
 
-                      {/* Buttons neatly aligned */}
-                      <div className="flex gap-3 mt-auto">
-                        <Button className="bg-green-500 hover:bg-green-600 text-white w-1/2 transition-all">
+                      <div className="flex gap-3 mt-4">
+                        <Button
+                          onClick={() => handleRequestAction(req._id, "accept")}
+                          className="bg-green-500 hover:bg-green-600 text-white w-1/2"
+                        >
                           Accept
                         </Button>
-                        <Button className="bg-red-500 hover:bg-red-600 text-white w-1/2 transition-all">
+                        <Button
+                          onClick={() => handleRequestAction(req._id, "reject")}
+                          className="bg-red-500 hover:bg-red-600 text-white w-1/2"
+                        >
                           Reject
                         </Button>
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-600 italic">
+                No join requests available.
+              </p>
+            )}
           </motion.div>
         </div>
       </div>
