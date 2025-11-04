@@ -10,6 +10,8 @@ const UserDashboard = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  console.log("requests : ",requests)
+
   // ✅ Fetch all data on mount
   useEffect(() => {
     const fetchData = async () => {
@@ -124,10 +126,10 @@ const UserDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
               <div>
                 <p>
-                  <strong>Name:</strong> {user?.firstName} {user?.lastName}
+                  <strong>Name:</strong> {user?.userId.firstName} {user?.userId.lastName}
                 </p>
                 <p>
-                  <strong>Email:</strong> {user?.email}
+                  <strong>Email:</strong> {user?.userId.email}
                 </p>
                 <p>
                   <strong>Bio:</strong> {user?.bio || "—"}

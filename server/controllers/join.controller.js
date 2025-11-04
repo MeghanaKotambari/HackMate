@@ -4,7 +4,7 @@ const profileModel = require("../models/profile.model");
 
 module.exports.sendJoinRequest = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.body;
     const teamId = req.params.teamId;
 
     const team = await teamModel.findById(teamId);
@@ -128,7 +128,7 @@ module.exports.getRequestsForTeam = async (req, res) => {
 
     const requests = await joinRequestModel
       .find({ teamId })
-      .populate("userId", "firstName lastName email skills")
+      .populate("userId")
       .sort({ requestedAt: -1 });
 
     if (!requests || requests.length === 0) {
