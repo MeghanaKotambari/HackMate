@@ -17,18 +17,24 @@ const UserDashboard = () => {
         setLoading(true);
 
         // 1️⃣ Get user profile
-        const userRes = await axios.get("http://localhost:3000/api/hackmate/profile/getProfile", {
-          withCredentials: true,
-        });
+        const userRes = await axios.get(
+          "http://localhost:3000/api/hackmate/profile/getProfile",
+          {
+            withCredentials: true,
+          }
+        );
         setUser(userRes.data.profile);
 
         // 2️⃣ Get user's teams
-        const teamsRes = await axios.get("http://localhost:3000/api/hackmate/team/getMyTeams", {
-          headers : {
-            "Content-Type" : "application/json",
-          },
-          withCredentials : true
-        });
+        const teamsRes = await axios.get(
+          "http://localhost:3000/api/hackmate/team/getMyTeams",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
         setTeams(teamsRes.data.teams || []);
 
         // 3️⃣ For each team (leader), get join requests
@@ -37,7 +43,10 @@ const UserDashboard = () => {
           try {
             const reqRes = await axios.get(
               `http://localhost:3000/api/hackmate/join/team/${team._id}`,
-              { withCredentials: true }
+              {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+              }
             );
             allRequests = [...allRequests, ...reqRes.data.requests];
           } catch {
@@ -98,7 +107,6 @@ const UserDashboard = () => {
 
       {/* 📊 Dashboard Content */}
       <div className="relative z-10 h-full w-full overflow-y-auto p-10 flex flex-col items-center space-y-10">
-        
         {/* 👤 User Info */}
         {user && (
           <motion.div
@@ -115,17 +123,28 @@ const UserDashboard = () => {
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
               <div>
-                <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Bio:</strong> {user.bio || "—"}</p>
+                <p>
+                  <strong>Name:</strong> {user?.firstName} {user?.lastName}
+                </p>
+                <p>
+                  <strong>Email:</strong> {user?.email}
+                </p>
+                <p>
+                  <strong>Bio:</strong> {user?.bio || "—"}
+                </p>
               </div>
               <div>
-                <p><strong>Skills:</strong> {user.skills?.join(", ") || "—"}</p>
-                <p><strong>Interests:</strong> {user.interests?.join(", ") || "—"}</p>
+                <p>
+                  <strong>Skills:</strong> {user?.skills?.join(", ") || "—"}
+                </p>
+                <p>
+                  <strong>Interests:</strong>{" "}
+                  {user?.interests?.join(", ") || "—"}
+                </p>
                 <div className="flex gap-4 mt-3">
-                  {user.github && (
+                  {user?.github && (
                     <a
-                      href={user.github}
+                      href={user?.github}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 font-semibold hover:text-blue-800 underline"
@@ -133,9 +152,9 @@ const UserDashboard = () => {
                       GitHub
                     </a>
                   )}
-                  {user.linkedin && (
+                  {user?.linkedin && (
                     <a
-                      href={user.linkedin}
+                      href={user?.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 font-semibold hover:text-blue-800 underline"
@@ -226,13 +245,14 @@ const UserDashboard = () => {
                     <CardContent className="p-6 flex flex-col justify-between">
                       <div>
                         <h3 className="text-lg font-bold text-gray-800 mb-2">
-                          {req.userId.firstName} {req.userId.lastName}
+                          {req.userId?.firstName} {req.userId?.lastName}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          <strong>Team:</strong> {req.teamId.teamName}
+                          <strong>Team:</strong> {req.teamId?.teamName}
                         </p>
                         <p className="text-sm text-gray-600">
-                          <strong>Skills:</strong> {req.userId.skills?.join(", ") || "—"}
+                          <strong>Skills:</strong>{" "}
+                          {req.userId?.skills?.join(", ") || "—"}
                         </p>
                       </div>
 
