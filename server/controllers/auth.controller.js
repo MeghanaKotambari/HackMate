@@ -30,7 +30,12 @@ module.exports.register = async (req, res) => {
       { userId: newUser._id },
       process.env.JWT_TOKEN
     );
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
     return res
       .status(201)
       .json({ message: "Register Successfully", success: true, user: newUser });
@@ -58,7 +63,12 @@ module.exports.login = async (req, res) => {
     }
 
     const token = await jwt.sign({ userId: user._id }, process.env.JWT_TOKEN);
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // ✅ set to true in production (HTTPS)
+      sameSite: "none", // ✅ required for cross-site cookies
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
     return res
       .status(200)

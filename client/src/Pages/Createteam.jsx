@@ -27,20 +27,19 @@ const CreateTeam = () => {
     setIsSubmitting(true);
 
     try {
-      const token = localStorage.getItem("token"); // optional auth token if used
       const res = await axios.post(
         "http://localhost:3000/api/hackmate/team/createTeam",
         form,
         {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true, // ✅ crucial for sending cookies
         }
       );
 
       alert("✅ Team created successfully!");
       console.log("Team Created:", res.data);
+
+      // Reset form
       setForm({
         teamName: "",
         hackathonName: "",
@@ -51,7 +50,7 @@ const CreateTeam = () => {
         description: "",
       });
     } catch (error) {
-      console.error("Error creating team:", error);
+      console.error("❌ Error creating team:", error);
       alert("❌ Failed to create team. Please try again!");
     } finally {
       setIsSubmitting(false);
@@ -60,7 +59,7 @@ const CreateTeam = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* 🔵 Animated Split Background */}
+      {/* Background */}
       <div className="absolute inset-0 flex">
         <motion.div
           initial={{ backgroundPosition: "0% 50%" }}
@@ -76,7 +75,7 @@ const CreateTeam = () => {
         />
       </div>
 
-      {/* 🟡 Center Card (Scroll Enabled) */}
+      {/* Card */}
       <div className="relative z-10 flex justify-center items-center h-full w-full px-4 py-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -84,7 +83,6 @@ const CreateTeam = () => {
           transition={{ duration: 1 }}
           className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 my-10"
         >
-          {/* ✨ Title */}
           <h1
             style={{ fontFamily: "'Bungee', sans-serif" }}
             className="text-3xl font-extrabold text-center text-yellow-500 mb-2"
@@ -95,7 +93,7 @@ const CreateTeam = () => {
             Set up your dream hackathon team 🚀
           </p>
 
-          {/* 🧾 Form */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-gray-700 font-semibold mb-1">
@@ -196,7 +194,6 @@ const CreateTeam = () => {
               />
             </div>
 
-            {/* 🟠 Button */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 type="submit"
