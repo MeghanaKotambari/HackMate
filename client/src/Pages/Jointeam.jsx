@@ -13,7 +13,15 @@ const Jointeam = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/hackmate/team/getAllTeams");
+        const res = await axios.get(
+          "http://localhost:3000/api/hackmate/team/getAllTeams",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
         setTeams(res.data.teams || []);
       } catch (err) {
         console.error("Error fetching teams:", err);
@@ -54,7 +62,9 @@ const Jointeam = () => {
         {loading ? (
           <p className="text-center text-white italic">Loading teams...</p>
         ) : teams.length === 0 ? (
-          <p className="text-center text-gray-200 italic">No teams available yet.</p>
+          <p className="text-center text-gray-200 italic">
+            No teams available yet.
+          </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {teams.map((team) => (
@@ -74,9 +84,8 @@ const Jointeam = () => {
                       🏆 {team.hackathonName}
                     </p>
                     <p className="text-gray-600 text-sm mb-1">
-                      🗓{" "}
-                      {new Date(team.hackathonStartDate).toLocaleDateString()} →{" "}
-                      {new Date(team.hackathonEndDate).toLocaleDateString()}
+                      🗓 {new Date(team.hackathonStartDate).toLocaleDateString()}{" "}
+                      → {new Date(team.hackathonEndDate).toLocaleDateString()}
                     </p>
 
                     {/* Leader */}
@@ -111,7 +120,7 @@ const Jointeam = () => {
 
                     {/* Button */}
                     <Button
-                      onClick={() => navigate(`/team/${team._id}`)}
+                      onClick={() => navigate(`/viewdetails/${team._id}`)}
                       className="mt-5 w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl transition-all"
                     >
                       View Details

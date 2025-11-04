@@ -14,7 +14,12 @@ const ViewDetails = () => {
     const fetchTeam = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/hackmate/team/getTeam/${id}`
+          `http://localhost:3000/api/hackmate/team/getTeam/${id}`,{
+            headers : {
+              "Content-Type" : "application/json"
+            },
+            withCredentials : true
+          }
         );
         setTeam(res.data.team);
       } catch (err) {
