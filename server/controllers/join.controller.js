@@ -128,7 +128,13 @@ module.exports.getRequestsForTeam = async (req, res) => {
 
     const requests = await joinRequestModel
       .find({ teamId })
-      .populate("userId", "firstName lastName email skills")
+      .populate({
+        path: "userId", // first populate the userId (Profile)
+        populate: {
+          path: "profileId", // then populate the nested profileId inside Profile
+          model: "Profile", // the model that profileId refers to
+        },
+      })
       .sort({ requestedAt: -1 });
 
     if (!requests || requests.length === 0) {

@@ -38,7 +38,8 @@ const ViewDetails = () => {
     try {
       const res = await axios.post(
         `http://localhost:3000/api/hackmate/join/${id}/request`,
-        {},
+        {}
+        ,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
