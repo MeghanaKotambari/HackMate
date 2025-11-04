@@ -4,15 +4,12 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { useSelector } from "react-redux";
 
 const ViewDetails = () => {
   const { id } = useParams();
   const [team, setTeam] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user } = useSelector((store) => store.auth);
-  console.log("user : ", user);
 
   // Fetch team details
   useEffect(() => {
@@ -41,7 +38,8 @@ const ViewDetails = () => {
     try {
       const res = await axios.post(
         `http://localhost:3000/api/hackmate/join/${id}/request`,
-        { userId: user._id },
+        {}
+        ,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -60,8 +58,7 @@ const ViewDetails = () => {
     }
   };
 
-  if (!team)
-    return <p className="text-center mt-10">Loading team details...</p>;
+  if (!team) return <p className="text-center mt-10">Loading team details...</p>;
 
   return (
     <div className="relative w-screen h-screen overflow-y-auto">
@@ -107,9 +104,7 @@ const ViewDetails = () => {
         {/* Skills */}
         {team.requiredSkills?.length > 0 && (
           <div className="mb-4">
-            <p className="font-semibold text-gray-800 mb-1">
-              🧠 Required Skills:
-            </p>
+            <p className="font-semibold text-gray-800 mb-1">🧠 Required Skills:</p>
             <div className="flex flex-wrap gap-2">
               {team.requiredSkills.map((skill, idx) => (
                 <span
@@ -133,9 +128,7 @@ const ViewDetails = () => {
 
         {/* Leader Section */}
         <div className="mb-6 bg-yellow-50 p-4 rounded-xl shadow-inner">
-          <p className="font-bold text-yellow-700 mb-2 text-lg">
-            👑 Team Leader
-          </p>
+          <p className="font-bold text-yellow-700 mb-2 text-lg">👑 Team Leader</p>
           <div className="flex justify-between items-center">
             <div>
               <p className="font-semibold text-gray-800">
@@ -166,9 +159,7 @@ const ViewDetails = () => {
 
         {/* Members Section */}
         <div className="mb-6 bg-gray-50 p-4 rounded-xl shadow-inner">
-          <p className="font-bold text-gray-800 mb-3 text-lg">
-            👥 Team Members
-          </p>
+          <p className="font-bold text-gray-800 mb-3 text-lg">👥 Team Members</p>
           {team.members.length > 0 ? (
             team.members.map((member, idx) => (
               <div

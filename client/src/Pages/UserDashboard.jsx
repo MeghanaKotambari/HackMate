@@ -10,7 +10,7 @@ const UserDashboard = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  console.log("requests : ",requests)
+  console.log("requests : ", requests);
 
   // ✅ Fetch all data on mount
   useEffect(() => {
@@ -126,7 +126,8 @@ const UserDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
               <div>
                 <p>
-                  <strong>Name:</strong> {user?.userId.firstName} {user?.userId.lastName}
+                  <strong>Name:</strong> {user?.userId.firstName}{" "}
+                  {user?.userId.lastName}
                 </p>
                 <p>
                   <strong>Email:</strong> {user?.userId.email}
@@ -250,11 +251,15 @@ const UserDashboard = () => {
                           {req.userId?.firstName} {req.userId?.lastName}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          <strong>Team:</strong> {req.teamId?.teamName}
+                          <strong>User Bio :</strong> {req.userId?.profileId.bio}{" "}
+                          {req.userId?.lastName}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <strong>email:</strong> {req.userId?.email}
                         </p>
                         <p className="text-sm text-gray-600">
                           <strong>Skills:</strong>{" "}
-                          {req.userId?.skills?.join(", ") || "—"}
+                          {req.userId?.profileId.skills?.join(", ") || "—"}
                         </p>
                       </div>
 

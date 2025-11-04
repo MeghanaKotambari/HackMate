@@ -9,7 +9,7 @@ const joinRequestSchema = new mongoose.Schema(
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Profile",
+      ref: "Auth",
       required: true,
     },
     status: {

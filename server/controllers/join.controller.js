@@ -4,7 +4,7 @@ const profileModel = require("../models/profile.model");
 
 module.exports.sendJoinRequest = async (req, res) => {
   try {
-    const {userId} = req.body;
+    const userId = req.userId;
     const teamId = req.params.teamId;
 
     const team = await teamModel.findById(teamId);
@@ -128,7 +128,13 @@ module.exports.getRequestsForTeam = async (req, res) => {
 
     const requests = await joinRequestModel
       .find({ teamId })
-      .populate("userId")
+      .populate({
+        path: "userId", // first populate the userId (Profile)
+        populate: {
+          path: "profileId", // then populate the nested profileId inside Profile
+          model: "Profile", // the model that profileId refers to
+        },
+      })
       .sort({ requestedAt: -1 });
 
     if (!requests || requests.length === 0) {
