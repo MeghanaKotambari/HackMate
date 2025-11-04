@@ -4,7 +4,7 @@ const profileModel = require("../models/profile.model");
 
 module.exports.sendJoinRequest = async (req, res) => {
   try {
-    const userId = req.body;
+    const {userId} = req.body;
     const teamId = req.params.teamId;
 
     const team = await teamModel.findById(teamId);
