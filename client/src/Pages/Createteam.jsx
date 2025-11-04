@@ -43,12 +43,15 @@ const CreateTeam = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true, // ✅ crucial for sending cookies
         }
       );
 
       alert("✅ Team created successfully!");
       console.log("Team Created:", res.data);
 
+      // Reset form
       setForm({
         teamName: "",
         hackathonName: "",
@@ -60,11 +63,15 @@ const CreateTeam = () => {
       });
     } catch (error) {
       console.error("❌ Error creating team:", error);
+<<<<<<< HEAD
       if (error.response?.data?.message) {
         alert(`❌ ${error.response.data.message}`);
       } else {
         alert("❌ Failed to create team. Please try again!");
       }
+=======
+      alert("❌ Failed to create team. Please try again!");
+>>>>>>> 66c9ce382a4b79ecfefca5485c1c5c8397fba7aa
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +79,11 @@ const CreateTeam = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
+<<<<<<< HEAD
       {/* 🔵 Animated Background */}
+=======
+      {/* Background */}
+>>>>>>> 66c9ce382a4b79ecfefca5485c1c5c8397fba7aa
       <div className="absolute inset-0 flex">
         <motion.div
           initial={{ backgroundPosition: "0% 50%" }}
@@ -88,7 +99,11 @@ const CreateTeam = () => {
         />
       </div>
 
+<<<<<<< HEAD
       {/* 🟡 Form Card */}
+=======
+      {/* Card */}
+>>>>>>> 66c9ce382a4b79ecfefca5485c1c5c8397fba7aa
       <div className="relative z-10 flex justify-center items-center h-full w-full px-4 py-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -96,7 +111,10 @@ const CreateTeam = () => {
           transition={{ duration: 1 }}
           className="w-full max-w-5xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-10 my-10"
         >
+<<<<<<< HEAD
           {/* ✨ Header */}
+=======
+>>>>>>> 66c9ce382a4b79ecfefca5485c1c5c8397fba7aa
           <h1
             style={{ fontFamily: "'Bungee', sans-serif" }}
             className="text-4xl font-extrabold text-center text-yellow-500 mb-3"
@@ -107,9 +125,14 @@ const CreateTeam = () => {
             Set up your dream hackathon team 🚀
           </p>
 
+<<<<<<< HEAD
           {/* 🧾 Form in Grid Layout */}
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Team Name */}
+=======
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+>>>>>>> 66c9ce382a4b79ecfefca5485c1c5c8397fba7aa
             <div>
               <label className="block text-gray-700 font-semibold mb-1">Team Name</label>
               <Input
@@ -199,6 +222,7 @@ const CreateTeam = () => {
               />
             </div>
 
+<<<<<<< HEAD
             {/* 🟠 Submit Button */}
             <div className="col-span-2 mt-4">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -211,6 +235,17 @@ const CreateTeam = () => {
                 </Button>
               </motion.div>
             </div>
+=======
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 text-lg font-bold bg-yellow-500 text-white rounded-xl shadow-[0_0_20px_rgba(255,255,0,0.4)] hover:bg-yellow-600 hover:shadow-[0_0_30px_rgba(255,255,0,0.6)] transition-all"
+              >
+                {isSubmitting ? "Creating..." : "Create Team"}
+              </Button>
+            </motion.div>
+>>>>>>> 66c9ce382a4b79ecfefca5485c1c5c8397fba7aa
           </form>
         </motion.div>
       </div>
