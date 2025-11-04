@@ -111,7 +111,7 @@ const LandingPage = () => {
               },
               {
                 title: "Leaderboards",
-                color: "yellow",
+                color: "sky",
                 text: "See top teams, track progress, and celebrate achievements in live hackathon leaderboards.",
               },
             ].map((f, i) => (
