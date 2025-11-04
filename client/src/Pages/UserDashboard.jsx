@@ -72,126 +72,156 @@ const UserDashboard = () => {
       </div>
 
       {/* 🧭 Dashboard Content */}
-      <div className="relative z-10 h-full w-full overflow-y-auto p-8 flex flex-col items-center space-y-8">
-        {/* 👤 User Details */}
+      <div className="relative z-10 h-full w-full overflow-y-auto p-10 flex flex-col items-center space-y-10">
+
+        {/* 👤 User Details (Top Center) */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="w-full max-w-4xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl p-8"
+          className="w-full max-w-4xl bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-10"
         >
           <h1
             style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-3xl font-bold text-yellow-500 mb-4 text-center"
+            className="text-4xl font-bold text-yellow-500 mb-8 text-center drop-shadow-sm"
           >
             👤 User Dashboard
           </h1>
 
-          <div className="text-gray-700 space-y-2 text-center md:text-left">
-            <p><strong>Name:</strong> {user.name}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Bio:</strong> {user.bio}</p>
-            <p><strong>Skills:</strong> {user.skills.join(", ")}</p>
-            <p><strong>Interests:</strong> {user.interests.join(", ")}</p>
-            <div className="flex justify-center md:justify-start gap-4 mt-3">
-              <a href={user.github} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                GitHub
-              </a>
-              <a href={user.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                LinkedIn
-              </a>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
+            <div>
+              <p><strong>Name:</strong> {user.name}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Bio:</strong> {user.bio}</p>
+            </div>
+            <div>
+              <p><strong>Skills:</strong> {user.skills.join(", ")}</p>
+              <p><strong>Interests:</strong> {user.interests.join(", ")}</p>
+              <div className="flex gap-4 mt-3">
+                <a
+                  href={user.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 font-semibold hover:text-blue-800 underline transition-all"
+                >
+                  GitHub
+                </a>
+                <a
+                  href={user.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 font-semibold hover:text-blue-800 underline transition-all"
+                >
+                  LinkedIn
+                </a>
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* 🧑‍🤝‍🧑 Your Teams */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          className="w-full max-w-4xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl p-8"
-        >
-          <h2
-            style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-2xl font-bold text-sky-500 mb-4 text-center"
-          >
-            🧩 Your Teams
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {teams.map((team) => (
-              <Card
-                key={team.id}
-                className="bg-gray-100 border border-gray-300 rounded-2xl shadow-md"
-              >
-                <CardContent className="p-5 space-y-2">
-                  <h3 className="text-lg font-bold text-gray-800">{team.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    Hackathon: {team.hackathon}
-                  </p>
-                  <p className="text-sm">
-                    Members: {team.members}/{team.maxMembers}
-                  </p>
-                  <p
-                    className={`text-sm font-semibold ${
-                      team.status === "Open"
-                        ? "text-green-600"
-                        : "text-red-500"
-                    }`}
-                  >
-                    Status: {team.status}
-                  </p>
-                  <Button className="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white w-full">
-                    View Team
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
+        {/* 🧩 Teams & Requests Side by Side */}
+        <div className="grid md:grid-cols-2 gap-10 w-full max-w-7xl">
 
-        {/* 📩 Join Requests */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.4 }}
-          className="w-full max-w-4xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl p-8 mb-10"
-        >
-          <h2
-            style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-2xl font-bold text-green-500 mb-4 text-center"
+          {/* 🧑‍🤝‍🧑 Your Teams */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.2 }}
+            className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-8"
           >
-            📩 Join Requests
-          </h2>
-          {requests.map((req) => (
-            <Card
-              key={req.id}
-              className="mb-4 bg-gray-100 border border-gray-300 rounded-2xl shadow-sm"
+            <h2
+              style={{ fontFamily: "'Bungee', sans-serif" }}
+              className="text-3xl font-bold text-sky-600 mb-6 text-center drop-shadow-sm"
             >
-              <CardContent className="p-5">
-                <h3 className="text-lg font-bold text-gray-800">
-                  {req.name}
-                </h3>
-                <p className="text-sm text-gray-600 mb-1">
-                  Requested Team: <strong>{req.requestedTeam}</strong>
-                </p>
-                <p className="text-sm text-gray-600 mb-1">
-                  Skills: {req.skills.join(", ")}
-                </p>
-                <p className="text-sm italic text-gray-700 mb-3">
-                  “{req.message}”
-                </p>
-                <div className="flex gap-3">
-                  <Button className="bg-green-500 hover:bg-green-600 text-white w-full">
-                    Accept
-                  </Button>
-                  <Button className="bg-red-500 hover:bg-red-600 text-white w-full">
-                    Reject
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </motion.div>
+              🧩 Your Teams
+            </h2>
+
+            <div className="grid sm:grid-cols-1 gap-6">
+              {teams.map((team) => (
+                <motion.div
+                  key={team.id}
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ type: "spring", stiffness: 120 }}
+                >
+                  <Card className="bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-300 rounded-2xl shadow-md hover:shadow-xl transition-all h-full">
+                    <CardContent className="p-6 flex flex-col justify-between h-full">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-1">{team.name}</h3>
+                        <p className="text-sm text-gray-600">Hackathon: {team.hackathon}</p>
+                        <p className="text-sm text-gray-600">
+                          Members: {team.members}/{team.maxMembers}
+                        </p>
+                        <p
+                          className={`text-sm font-semibold mt-1 ${
+                            team.status === "Open" ? "text-green-600" : "text-red-500"
+                          }`}
+                        >
+                          Status: {team.status}
+                        </p>
+                      </div>
+
+                      <Button className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white w-full transition-all">
+                        View Team
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* 📩 Join Requests */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.4 }}
+            className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-8"
+          >
+            <h2
+              style={{ fontFamily: "'Bungee', sans-serif" }}
+              className="text-3xl font-bold text-green-500 mb-6 text-center drop-shadow-sm"
+            >
+              📩 Join Requests
+            </h2>
+
+            <div className="grid sm:grid-cols-1 gap-6">
+              {requests.map((req) => (
+                <motion.div
+                  key={req.id}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 120 }}
+                >
+                  <Card className="bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-300 rounded-2xl shadow-md hover:shadow-xl transition-all h-full">
+                    <CardContent className="p-6 flex flex-col justify-between h-full">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-800 mb-2">{req.name}</h3>
+                        <p className="text-sm text-gray-600">
+                          <strong>Requested Team:</strong> {req.requestedTeam}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <strong>Skills:</strong> {req.skills.join(", ")}
+                        </p>
+                        <p className="text-sm italic text-gray-700 mt-2 mb-4">
+                          “{req.message}”
+                        </p>
+                      </div>
+
+                      {/* Buttons neatly aligned */}
+                      <div className="flex gap-3 mt-auto">
+                        <Button className="bg-green-500 hover:bg-green-600 text-white w-1/2 transition-all">
+                          Accept
+                        </Button>
+                        <Button className="bg-red-500 hover:bg-red-600 text-white w-1/2 transition-all">
+                          Reject
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

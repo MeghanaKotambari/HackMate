@@ -27,20 +27,28 @@ const CreateTeam = () => {
     setIsSubmitting(true);
 
     try {
-      const token = localStorage.getItem("token"); // optional auth token if used
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("⚠️ Please log in before creating a team!");
+        setIsSubmitting(false);
+        return;
+      }
+
       const res = await axios.post(
         "http://localhost:3000/api/hackmate/team/createTeam",
         form,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       alert("✅ Team created successfully!");
       console.log("Team Created:", res.data);
+
       setForm({
         teamName: "",
         hackathonName: "",
@@ -51,8 +59,12 @@ const CreateTeam = () => {
         description: "",
       });
     } catch (error) {
-      console.error("Error creating team:", error);
-      alert("❌ Failed to create team. Please try again!");
+      console.error("❌ Error creating team:", error);
+      if (error.response?.data?.message) {
+        alert(`❌ ${error.response.data.message}`);
+      } else {
+        alert("❌ Failed to create team. Please try again!");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -60,7 +72,7 @@ const CreateTeam = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* 🔵 Animated Split Background */}
+      {/* 🔵 Animated Background */}
       <div className="absolute inset-0 flex">
         <motion.div
           initial={{ backgroundPosition: "0% 50%" }}
@@ -76,31 +88,30 @@ const CreateTeam = () => {
         />
       </div>
 
-      {/* 🟡 Center Card (Scroll Enabled) */}
+      {/* 🟡 Form Card */}
       <div className="relative z-10 flex justify-center items-center h-full w-full px-4 py-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 my-10"
+          className="w-full max-w-5xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-10 my-10"
         >
-          {/* ✨ Title */}
+          {/* ✨ Header */}
           <h1
             style={{ fontFamily: "'Bungee', sans-serif" }}
-            className="text-3xl font-extrabold text-center text-yellow-500 mb-2"
+            className="text-4xl font-extrabold text-center text-yellow-500 mb-3"
           >
             Create Your Team
           </h1>
-          <p className="text-gray-700 mb-6 italic text-center text-sm">
+          <p className="text-gray-700 mb-10 italic text-center text-sm">
             Set up your dream hackathon team 🚀
           </p>
 
-          {/* 🧾 Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 🧾 Form in Grid Layout */}
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Team Name */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Team Name
-              </label>
+              <label className="block text-gray-700 font-semibold mb-1">Team Name</label>
               <Input
                 name="teamName"
                 value={form.teamName}
@@ -111,10 +122,9 @@ const CreateTeam = () => {
               />
             </div>
 
+            {/* Hackathon Name */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Hackathon Name
-              </label>
+              <label className="block text-gray-700 font-semibold mb-1">Hackathon Name</label>
               <Input
                 name="hackathonName"
                 value={form.hackathonName}
@@ -125,39 +135,34 @@ const CreateTeam = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Start Date
-                </label>
-                <Input
-                  type="date"
-                  name="startDate"
-                  value={form.startDate}
-                  onChange={handleChange}
-                  className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  End Date
-                </label>
-                <Input
-                  type="date"
-                  name="endDate"
-                  value={form.endDate}
-                  onChange={handleChange}
-                  className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
-                  required
-                />
-              </div>
+            {/* Dates */}
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">Start Date</label>
+              <Input
+                type="date"
+                name="startDate"
+                value={form.startDate}
+                onChange={handleChange}
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
+                required
+              />
             </div>
 
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Max Members
-              </label>
+              <label className="block text-gray-700 font-semibold mb-1">End Date</label>
+              <Input
+                type="date"
+                name="endDate"
+                value={form.endDate}
+                onChange={handleChange}
+                className="bg-gray-100 text-gray-800 border border-gray-300 focus:border-yellow-500 rounded-xl"
+                required
+              />
+            </div>
+
+            {/* Max Members */}
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">Max Members</label>
               <Input
                 type="number"
                 name="maxMembers"
@@ -169,10 +174,9 @@ const CreateTeam = () => {
               />
             </div>
 
+            {/* Required Skills */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Required Skills
-              </label>
+              <label className="block text-gray-700 font-semibold mb-1">Required Skills</label>
               <Input
                 name="requiredSkills"
                 value={form.requiredSkills}
@@ -182,10 +186,9 @@ const CreateTeam = () => {
               />
             </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Description
-              </label>
+            {/* Description - Full Width */}
+            <div className="col-span-2">
+              <label className="block text-gray-700 font-semibold mb-1">Description</label>
               <Textarea
                 name="description"
                 value={form.description}
@@ -196,16 +199,18 @@ const CreateTeam = () => {
               />
             </div>
 
-            {/* 🟠 Button */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-3 text-lg font-bold bg-yellow-500 text-white rounded-xl shadow-[0_0_20px_rgba(255,255,0,0.4)] hover:bg-yellow-600 hover:shadow-[0_0_30px_rgba(255,255,0,0.6)] transition-all"
-              >
-                {isSubmitting ? "Creating..." : "Create Team"}
-              </Button>
-            </motion.div>
+            {/* 🟠 Submit Button */}
+            <div className="col-span-2 mt-4">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 text-lg font-bold bg-yellow-500 text-white rounded-xl shadow-[0_0_20px_rgba(255,255,0,0.4)] hover:bg-yellow-600 hover:shadow-[0_0_30px_rgba(255,255,0,0.6)] transition-all"
+                >
+                  {isSubmitting ? "Creating..." : "Create Team"}
+                </Button>
+              </motion.div>
+            </div>
           </form>
         </motion.div>
       </div>
