@@ -28,7 +28,13 @@ const RegisterPage = () => {
     try {
       const res = await axios.post(
         "http://localhost:3000/api/hackmate/auth/register",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
       );
       alert("✅ Registration Successful!");
       dispatch(setUser(res.data.user));

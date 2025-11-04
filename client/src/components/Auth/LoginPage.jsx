@@ -26,7 +26,11 @@ const LoginPage = () => {
     try {
       const res = await axios.post(
         "http://localhost:3000/api/hackmate/auth/login",
-        formData
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
       alert("✅ Login successful!");
       dispatch(setUser(res.data.user));

@@ -32,8 +32,9 @@ module.exports.register = async (req, res) => {
     );
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "none",
+      secure: false, // ✅ keep false in localhost (true only in HTTPS)
+      sameSite: "lax", // ✅ use 'lax' for local dev (Chrome blocks 'none' on HTTP)
+      path: "/", // ✅ make cookie visible to all routes
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     return res
@@ -65,8 +66,9 @@ module.exports.login = async (req, res) => {
     const token = await jwt.sign({ userId: user._id }, process.env.JWT_TOKEN);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // ✅ set to true in production (HTTPS)
-      sameSite: "none", // ✅ required for cross-site cookies
+      secure: false, // ✅ keep false in localhost (true only in HTTPS)
+      sameSite: "lax", // ✅ use 'lax' for local dev (Chrome blocks 'none' on HTTP)
+      path: "/", // ✅ make cookie visible to all routes
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 

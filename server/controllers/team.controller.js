@@ -83,6 +83,9 @@ module.exports.getAllTeam = async (req, res) => {
       return res.status(404).json({ message: "No teams found" });
     }
 
+    console.log(userId);
+    
+
     return res.status(200).json({
       message: "Teams Fetched Successfully",
       success: true,
